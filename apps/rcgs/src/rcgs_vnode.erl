@@ -65,12 +65,12 @@ handle_command(Message, Sender, State) ->
 
 handle_handoff_command(?FOLD_REQ{foldfun=Fun, acc0=Acc0}, _Sender, State) ->
     Fun1 =
-        fun({ID, Pid}, Acc0) ->
+        fun({ID, Pid}, Acc) ->
             EntityState = hangoff_entity(Pid, ID, State),
-            Fun(ID, EntityState, Acc0)
+            Fun(ID, EntityState, Acc)
         end,
-    Acc = ets:foldl(Fun1, Acc0, State#state.id2pid),
-    {reply, Acc, State};
+    Acc1 = ets:foldl(Fun1, Acc0, State#state.id2pid),
+    {reply, Acc1, State};
 handle_handoff_command(Message, Sender, State) ->
     ?LOG_DEBUG("unexpected handoff_command: ~p ~p", [Message, Sender]),
     {noreply, State}.
@@ -127,13 +127,13 @@ get_entity(EntityID, State=#state{id2pid=ID2Pid}) ->
             Pid
     end.
 
-start_entity(Args=[EntityID | _], State=#state{sup_ref=SupRef, pid2id=Pid2ID, id2pid=ID2Pid}) ->
+start_entity(Args=[EntityID | _], #state{sup_ref=SupRef, pid2id=Pid2ID, id2pid=ID2Pid}) ->
     {ok, Pid} = rcgs_vnode_sup:start_vnode_entity(SupRef, Args),
     ets:insert_new(Pid2ID, {Pid, EntityID}),
     ets:insert_new(ID2Pid, {EntityID, Pid}),
     Pid.
 
-hangoff_entity(Pid, ID, State=#state{pid2id=Pid2ID, id2pid=ID2Pid}) ->
+hangoff_entity(Pid, ID, #state{pid2id=Pid2ID, id2pid=ID2Pid}) ->
     {ok, EntityState} = rcgs_vnode_entity:handoff(Pid),
     ets:delete(Pid2ID, Pid),
     ets:delete(ID2Pid, ID),

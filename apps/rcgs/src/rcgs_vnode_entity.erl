@@ -48,7 +48,7 @@ init(Args) ->
     State = case Args of
         [ID] ->
             ?LOG_DEBUG("[~p]: starting...", [ID]),
-            {Type, Name} = ID,
+            {_, Name} = ID,
             #state{ id = ID, entity_state = call(ID, init, [Name]) };
         [ID, EntityState] ->
             ?LOG_DEBUG("[~p]: continue...", [ID]),
@@ -91,10 +91,10 @@ code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 terminate({shutdown, handoff}, #state{id = ID, entity_state = EntityState}) ->
-    ?LOG_DEBUG(": handoff terminating"),
+    ?LOG_DEBUG("[~p]: handoff terminating...", [ID]),
     ok;
 terminate(Reason, #state{id = ID, entity_state = EntityState}) ->
-    ?LOG_DEBUG(": terminating"),
+    ?LOG_DEBUG("[~p]: terminating...", [ID]),
     call(ID, terminate, [Reason, EntityState]),
     ok.
 
