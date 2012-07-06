@@ -1,0 +1,2 @@
+rcgs_console:join(["rcgs1@127.0.0.1"]).
+rcgs:call({test, <<"41">>}, ping).

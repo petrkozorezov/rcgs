@@ -1,0 +1,14 @@
+{application, rcgs,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  lager,
+                  riak_core
+                 ]},
+  {mod, { rcgs_app, []}},
+  {env, []}
+ ]}.

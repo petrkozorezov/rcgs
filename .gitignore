@@ -1,0 +1,10 @@
+*.beam
+*~
+.eunit/
+deps/
+dev/
+doc/
+rel/
+plts/
+log/
+logs/
