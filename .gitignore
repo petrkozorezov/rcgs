@@ -2,9 +2,8 @@
 *~
 .eunit/
 deps/
-dev/
 doc/
-rel/
+dev/
 plts/
 log/
 logs/
